@@ -40,26 +40,26 @@ const BUILTIN_APPS = [
   {
     id: "com.navuryx.chat",
     name: "Navuryx Chat",
-    version: "1.0.0",
+    version: "1.1.0",
     developer: "Navuryx Team",
-    description: "End-to-end encrypted direct peer messaging for iOS.",
+    description: "Decentralized peer-to-peer encrypted messaging with nearby discovery and offline assistant.",
     category: "Communication",
-    icon: "",
+    icon: "https://raw.githubusercontent.com/Navuryx/navuryx-appstore-apps/main/ios-chat/Sources/Assets.xcassets/AppIcon.appiconset/icon.png",
     downloadUrl: "https://github.com/Navuryx/navuryx-appstore-apps/releases/latest/download/NavuryxChat.ipa",
     size: 97852,
     source: "chat"
   },
   {
-    id: "com.navuryx.games.2048",
-    name: "Navuryx 2048",
+    id: "com.navuryx.gram",
+    name: "Navuryx Gram",
     version: "1.0.0",
     developer: "Navuryx Team",
-    description: "Minimalist sliding tile puzzle game with zero ads.",
-    category: "Games",
-    icon: "",
-    downloadUrl: "https://github.com/Navuryx/navuryx-appstore-apps/releases/latest/download/Navuryx2048.ipa",
-    size: 62603,
-    source: "g2048"
+    description: "Private photo sharing and social feed with zero tracking, local photo storage, and instant posts.",
+    category: "Social",
+    icon: "https://raw.githubusercontent.com/Navuryx/navuryx-appstore-apps/main/ios-gram/Sources/Assets.xcassets/AppIcon.appiconset/icon.png",
+    downloadUrl: "https://github.com/Navuryx/navuryx-appstore-apps/releases/latest/download/NavuryxGram.ipa",
+    size: 98660,
+    source: "gram"
   },
   {
     id: "com.navuryx.games.snake",
@@ -72,6 +72,18 @@ const BUILTIN_APPS = [
     downloadUrl: "https://github.com/Navuryx/navuryx-appstore-apps/releases/latest/download/NavuryxSnake.ipa",
     size: 62678,
     source: "snake"
+  },
+  {
+    id: "com.navuryx.games.2048",
+    name: "Navuryx 2048",
+    version: "1.0.0",
+    developer: "Navuryx Team",
+    description: "Minimalist sliding tile puzzle game with zero ads.",
+    category: "Games",
+    icon: "",
+    downloadUrl: "https://github.com/Navuryx/navuryx-appstore-apps/releases/latest/download/Navuryx2048.ipa",
+    size: 62603,
+    source: "g2048"
   },
   {
     id: "com.navuryx.games.pong",
@@ -93,7 +105,6 @@ app.get('/api/health', (req, res) => {
 });
 
 // PC Registration & Heartbeat
-// PC sends { token, lanIp, storePort, apps, deviceUdid }
 app.post(['/api/session/register', '/api/pc/sync'], (req, res) => {
   const { token, lanIp, storePort, apps, machine } = req.body;
   if (!token) {
@@ -106,7 +117,7 @@ app.post(['/api/session/register', '/api/pc/sync'], (req, res) => {
     lanIp: lanIp || req.ip,
     storePort: storePort || 8080,
     apps: Array.isArray(apps) ? apps : [],
-    machine: machine || 'Navuryx PC',
+    machine: machine || 'Windows PC',
     pendingRequests: existing.pendingRequests,
     lastSeen: Date.now()
   };
@@ -170,7 +181,6 @@ app.all(['/api/request', '/request'], (req, res) => {
     return res.send(`App ${appName} queued for signing on your PC.`);
   }
 
-  // If no PC connected yet, acknowledge queue
   res.send(`Queued ${appName}. Start Navuryx iOS Tool on PC to sign.`);
 });
 
@@ -184,7 +194,7 @@ app.get('/api/queue', (req, res) => {
   const session = sessions.get(token);
   session.lastSeen = Date.now();
   const queue = [...session.pendingRequests];
-  session.pendingRequests = []; // Drain queue
+  session.pendingRequests = [];
   res.json({ pending: queue });
 });
 

@@ -3,24 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Navuryx iOS Tool & PC Link Portal</title>
-  <meta name="description" content="Official website and PC link portal for Navuryx iOS Tool. Sideload, sign, and install iOS apps over the air with no Mac required.">
+  <title>Navuryx iOS Tool • PC Connect & Cloud Portal</title>
+  <meta name="description" content="Official website and PC Connect portal for Navuryx iOS Tool. Sideload, sign, and install iOS apps over the air with zero Mac required and Live Container support.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%234169E1'/><path d='M30 70 L50 30 L70 70 Z' fill='white'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <!-- QR Code Generator & Real-time Camera QR Scanner -->
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
     :root {
-      --bg: #06060a;
-      --card-bg: rgba(14, 14, 24, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
+      --bg: #06060c;
+      --card-bg: rgba(16, 17, 28, 0.75);
+      --card-border: rgba(255, 255, 255, 0.09);
       --blue: #4169E1;
       --blue-glow: rgba(65, 105, 225, 0.35);
-      --purple: #783CBE;
-      --green: #46BE6E;
-      --text: #f0f2ff;
-      --text-muted: #8b92b2;
+      --purple: #8A4FFF;
+      --green: #10B981;
+      --amber: #F59E0B;
+      --text: #F3F4F6;
+      --text-muted: #9CA3AF;
       --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
@@ -33,8 +36,8 @@
       line-height: 1.6;
       overflow-x: hidden;
       background-image: 
-        radial-gradient(circle at 15% 15%, rgba(65, 105, 225, 0.12) 0%, transparent 40%),
-        radial-gradient(circle at 85% 65%, rgba(120, 60, 190, 0.12) 0%, transparent 40%);
+        radial-gradient(circle at 10% 15%, rgba(65, 105, 225, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 90% 70%, rgba(138, 79, 255, 0.15) 0%, transparent 45%);
       background-attachment: fixed;
     }
 
@@ -47,136 +50,94 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--card-border);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(6, 6, 10, 0.8);
+      background: rgba(6, 6, 12, 0.85);
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.85rem;
       font-weight: 800;
-      font-size: 1.25rem;
+      font-size: 1.3rem;
       letter-spacing: -0.02em;
     }
 
     .logo-badge {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
       background: linear-gradient(135deg, var(--blue), var(--purple));
       display: grid;
       place-items: center;
       font-weight: 900;
       color: white;
-      box-shadow: 0 4px 14px var(--blue-glow);
+      box-shadow: 0 4px 16px var(--blue-glow);
     }
 
-    nav { display: flex; gap: 1.5rem; align-items: center; }
-    nav a { color: var(--text-muted); font-size: 0.95rem; font-weight: 600; }
-    nav a:hover, nav a.active { color: var(--text); }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 0.7rem 1.4rem;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-decoration: none;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--blue), #3154b8);
-      color: white;
-      box-shadow: 0 4px 18px var(--blue-glow);
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(65, 105, 225, 0.5);
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--text);
-      border: 1px solid var(--card-border);
-    }
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateY(-2px);
-    }
-
-    .btn-sm {
-      padding: 0.4rem 0.9rem;
-      font-size: 0.85rem;
-      border-radius: 8px;
-    }
+    nav { display: flex; gap: 1.25rem; align-items: center; }
+    nav a { color: var(--text-muted); font-size: 0.95rem; font-weight: 600; padding: 0.4rem 0.8rem; border-radius: 8px; transition: all 0.2s; }
+    nav a:hover, nav a.active { color: var(--text); background: rgba(255, 255, 255, 0.05); }
 
     .hero {
-      max-width: 1100px;
-      margin: 4rem auto 3rem;
-      padding: 0 1.5rem;
       text-align: center;
+      padding: 4rem 1.5rem 2.5rem;
+      max-width: 860px;
+      margin: 0 auto;
     }
 
-    .badge {
+    .pill-badge {
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      padding: 0.35rem 0.9rem;
-      background: rgba(65, 105, 225, 0.12);
-      border: 1px solid rgba(65, 105, 225, 0.25);
+      gap: 0.5rem;
+      background: rgba(65, 105, 225, 0.15);
+      border: 1px solid rgba(65, 105, 225, 0.35);
+      padding: 0.4rem 1rem;
       border-radius: 999px;
-      color: #7b9bf8;
       font-size: 0.85rem;
       font-weight: 600;
+      color: #93b4ff;
       margin-bottom: 1.5rem;
     }
 
     h1 {
-      font-size: clamp(2.5rem, 6vw, 4.25rem);
+      font-size: clamp(2.3rem, 5vw, 3.8rem);
       font-weight: 800;
       letter-spacing: -0.03em;
-      line-height: 1.1;
+      line-height: 1.15;
       margin-bottom: 1.25rem;
-      background: linear-gradient(180deg, #ffffff 40%, #9aa3cc 100%);
+      background: linear-gradient(180deg, #FFFFFF 0%, #A5B4FC 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    .subtitle {
-      font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+    .hero p {
       color: var(--text-muted);
-      max-width: 680px;
-      margin: 0 auto 2.5rem;
+      font-size: 1.15rem;
+      max-width: 650px;
+      margin: 0 auto 2rem;
     }
 
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
     }
 
-    .container-grid {
-      max-width: 1100px;
-      margin: 2rem auto 5rem;
-      padding: 0 1.5rem;
+    .grid-2 {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
     }
 
-    @media (min-width: 840px) {
-      .container-grid { grid-template-columns: 1.2fr 0.8fr; }
+    @media (max-width: 840px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      nav { display: none; }
     }
 
     .card {
@@ -184,65 +145,30 @@
       border: 1px solid var(--card-border);
       border-radius: 20px;
       padding: 2rem;
-      backdrop-filter: blur(14px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
       position: relative;
-      overflow: hidden;
     }
 
-    .card h2 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
+    .card-header {
       display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-
-    .card p.desc {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .form-group {
+      justify-content: space-between;
+      align-items: flex-start;
       margin-bottom: 1.25rem;
     }
 
-    .form-group label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-bottom: 0.5rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .input-field {
-      width: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--card-border);
-      padding: 0.85rem 1rem;
-      border-radius: 12px;
-      color: var(--text);
-      font-family: var(--font-mono);
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .input-field:focus {
-      border-color: var(--blue);
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 700;
     }
 
     .status-pill {
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      padding: 0.25rem 0.75rem;
+      padding: 0.35rem 0.85rem;
       border-radius: 999px;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-weight: 600;
       background: rgba(255, 255, 255, 0.06);
     }
@@ -254,125 +180,150 @@
       background: #888;
     }
 
-    .status-pill.connected { background: rgba(70, 190, 110, 0.15); color: #46be6e; }
-    .status-pill.connected .status-dot { background: #46be6e; box-shadow: 0 0 8px #46be6e; }
+    .status-pill.connected { background: rgba(16, 185, 129, 0.15); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .status-pill.connected .status-dot { background: var(--green); box-shadow: 0 0 10px var(--green); }
 
-    .status-pill.error { background: rgba(255, 75, 75, 0.15); color: #ff5555; }
-    .status-pill.error .status-dot { background: #ff5555; }
+    .status-pill.waiting { background: rgba(65, 105, 225, 0.15); color: #93b4ff; border: 1px solid rgba(65, 105, 225, 0.3); }
+    .status-pill.waiting .status-dot { background: #93b4ff; }
 
-    .qr-box {
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .input-field {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--card-border);
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-field:focus { border-color: var(--blue); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.4rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      color: white;
+      box-shadow: 0 4px 14px var(--blue-glow);
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+    }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.12); }
+    .btn-sm { padding: 0.5rem 1rem; font-size: 0.85rem; border-radius: 9px; }
+
+    .qr-container {
       background: white;
       padding: 1rem;
       border-radius: 16px;
       display: inline-block;
-      margin: 1rem 0;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      margin-top: 1rem;
     }
 
-    .qr-box canvas {
-      display: block;
-    }
-
-    .apps-list {
-      margin-top: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .app-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.85rem 1.1rem;
+    .app-card {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
-    }
-
-    .app-info {
+      border-radius: 16px;
+      padding: 1.25rem;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s;
     }
+    .app-card:hover { transform: translateY(-2px); border-color: rgba(65, 105, 225, 0.4); }
 
-    .app-title { font-weight: 700; font-size: 0.95rem; }
-    .app-sub { font-size: 0.8rem; color: var(--text-muted); }
-
-    .upload-dropzone {
-      border: 2px dashed rgba(255, 255, 255, 0.15);
-      border-radius: 16px;
-      padding: 2rem 1.5rem;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-top: 1.25rem;
-    }
-
-    .upload-dropzone:hover {
-      border-color: var(--blue);
-      background: rgba(65, 105, 225, 0.03);
-    }
-
-    .features-section {
-      max-width: 1100px;
-      margin: 0 auto 5rem;
-      padding: 0 1.5rem;
-    }
-
-    .section-title {
-      font-size: 2rem;
-      font-weight: 800;
-      text-align: center;
-      margin-bottom: 2.5rem;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .feature-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 1.75rem;
-      backdrop-filter: blur(10px);
-    }
-
-    .feature-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: rgba(65, 105, 225, 0.15);
-      color: var(--blue);
+    .app-top { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1rem; }
+    .app-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #1e1e30, #2a2a44);
       display: grid;
       place-items: center;
-      font-size: 1.4rem;
-      margin-bottom: 1.25rem;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      overflow: hidden;
     }
-
-    .feature-card h3 {
-      font-size: 1.2rem;
+    .app-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .app-meta h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .app-badge {
+      display: inline-block;
+      font-size: 0.72rem;
       font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .feature-card p {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.15rem 0.5rem;
+      border-radius: 6px;
       color: var(--text-muted);
-      font-size: 0.9rem;
-      line-height: 1.5;
+    }
+    .app-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-bottom: 1.25rem;
+      flex-grow: 1;
     }
 
-    footer {
-      border-top: 1px solid var(--card-border);
-      padding: 3rem 1.5rem;
+    .scanner-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 999;
+      display: none;
+      place-items: center;
+      padding: 1rem;
+    }
+    .scanner-content {
+      background: #11111c;
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      max-width: 480px;
+      width: 100%;
       text-align: center;
-      color: var(--text-muted);
-      font-size: 0.9rem;
     }
 
-    .hidden { display: none !important; }
+    .drop-zone {
+      border: 2px dashed rgba(65, 105, 225, 0.35);
+      border-radius: 16px;
+      padding: 1.8rem;
+      text-align: center;
+      cursor: pointer;
+      background: rgba(65, 105, 225, 0.04);
+      transition: all 0.2s;
+    }
+    .drop-zone:hover {
+      border-color: var(--blue);
+      background: rgba(65, 105, 225, 0.08);
+    }
   </style>
 </head>
 <body>
@@ -383,191 +334,156 @@
       <span>Navuryx iOS Tool</span>
     </div>
     <nav>
-      <a href="#pair" class="active">PC Link</a>
-      <a href="#downloads">Downloads</a>
-      <a href="#features">Features</a>
-      <a href="https://github.com/Navuryx/navuryx-ios-tool" target="_blank" class="btn btn-secondary btn-sm">GitHub</a>
+      <a href="#pc-connect" class="active">PC Connect</a>
+      <a href="#app-library">Apps Suite</a>
+      <a href="#container-guide">Live Container</a>
+      <a href="https://github.com/Navuryx/navuryx-ios-tool" target="_blank">GitHub</a>
     </nav>
   </header>
 
   <main>
     <section class="hero">
-      <div class="badge">Next-Gen iOS Sideloading & On-Device Store</div>
-      <h1>Sign, Sideload & Install IPAs.<br>Over the Air. No Mac Needed.</h1>
-      <p class="subtitle">
-        Navuryx iOS Tool connects your PC to your iPhone with an encrypted tunnel. Sign apps with your personal Apple ID, bypass the 3-app limit with Navuryx Container, and install directly from Safari.
-      </p>
-      <div class="hero-actions">
-        <a href="#pair" class="btn btn-primary">Connect PC Store</a>
-        <a href="#downloads" class="btn btn-secondary">Download Tool & IPAs</a>
+      <div class="pill-badge">
+        <span>⚡ Zero Cloudflare Dependency</span>
+        <span>•</span>
+        <span>Direct HTTPS OTA</span>
       </div>
+      <h1>Sideload & Run iOS Apps<br>Without Limits.</h1>
+      <p>Pair your iPhone with your Windows PC over Wi-Fi, bypass the 3-app personal limit with Navuryx Container, and install apps directly over the air.</p>
     </section>
 
-    <div class="container-grid">
-      <!-- Left: Interactive PC Link Portal -->
-      <section class="card" id="pair">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-          <div>
-            <h2><span>⚡</span> PC Store Link Portal</h2>
-            <p class="desc">Connect to your active Navuryx PC phone store to manage and install signed apps.</p>
+    <div class="container">
+      <div class="grid-2" id="pc-connect">
+        
+        <!-- PC Connect Control Card -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">PC Connect Bridge</h2>
+              <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem;">Connect your iPhone to Navuryx iOS Tool running on PC</p>
+            </div>
+            <div id="connStatus" class="status-pill waiting">
+              <div class="status-dot"></div>
+              <span id="connStatusText">Cloud Relay Ready</span>
+            </div>
           </div>
-          <div id="connStatus" class="status-pill">
-            <span class="status-dot"></span>
-            <span id="connStatusText">Disconnected</span>
+
+          <div class="form-group">
+            <label>Pair Code or Store Link</label>
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <input type="text" id="pcUrlInput" class="input-field" placeholder="Enter Pair Code or paste link...">
+              <button class="btn btn-primary" onclick="connectPCLink()">Pair</button>
+              <button class="btn btn-secondary" onclick="resetPCLink()">Clear</button>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.75rem;">
+              <button class="btn btn-secondary btn-sm" onclick="startScanner()">📷 Scan PC Screen QR</button>
+              <small style="color: var(--text-muted); font-size: 0.8rem;">Tap to scan the QR code on your PC monitor directly!</small>
+            </div>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label>Your PC Store Link or Key</label>
-          <div style="display: flex; gap: 0.5rem;">
-            <input type="text" id="pcUrlInput" class="input-field" placeholder="Enter Pair Code or Link (e.g. a8b4c2...)">
-            <button id="connectBtn" class="btn btn-primary" onclick="connectPCLink()">Connect</button><button class="btn btn-secondary" onclick="resetPCLink()" style="background: rgba(255,255,255,0.08); color: var(--text);">Clear</button>
-          </div>
-          <small style="color: var(--text-muted); display: block; margin-top: 0.5rem; font-size: 0.8rem;">
-            Enter the Pair Code shown in <strong>Navuryx iOS Tool &gt; Phone store</strong> on your PC, or open the link directly.
-          </small>
-        </div>
-
-        <!-- Connected State Details -->
-        <div id="connectedDetails" class="hidden">
-          <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--card-border);">
-            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">One-Tap Install & Phone Pairing</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
-              Scan the QR code with your iPhone camera or tap the button to pair Navuryx Store on your phone:
-            </p>
-
-            <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center;">
-              <div class="qr-box">
+          <div id="connectedDetails" style="margin-top: 1.5rem; border-top: 1px solid var(--card-border); padding-top: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h4 style="font-size: 0.95rem; font-weight: 700;">iPhone Pairing QR</h4>
+                <p style="color: var(--text-muted); font-size: 0.8rem;">Scan with iPhone Camera or open in Navuryx Store</p>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="copyPairLink()">Copy Link</button>
+            </div>
+            <div style="text-align: center;">
+              <div class="qr-container">
                 <canvas id="qrCanvas"></canvas>
               </div>
-              <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                <a id="deepLinkBtn" href="#" class="btn btn-primary">Open in Navuryx Store</a>
-                <button onclick="copyPairLink()" class="btn btn-secondary btn-sm">Copy Pair Link</button>
+              <div style="margin-top: 0.8rem;">
+                <a id="deepLinkBtn" href="#" class="btn btn-secondary btn-sm">📱 Open in Navuryx Store App</a>
               </div>
             </div>
           </div>
-
-          <div style="margin-top: 2rem;">
-            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Upload & Sign an .ipa</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">
-              Send an .ipa file to your paired PC to automatically sign with your Apple ID:
-            </p>
-            <div class="upload-dropzone" onclick="document.getElementById('fileInput').click()">
-              <input type="file" id="fileInput" accept=".ipa" class="hidden" onchange="uploadIPA(event)">
-              <div style="font-size: 2rem; margin-bottom: 0.5rem;">📦</div>
-              <div style="font-weight: 600;">Click to upload an .ipa or drag & drop</div>
-              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Transfers over secure tunnel directly to your PC</div>
-            </div>
-            <div id="uploadStatus" style="font-size: 0.85rem; margin-top: 0.5rem; font-weight: 600;"></div>
-          </div>
-
-          <div style="margin-top: 2rem;">
-            <h3 style="font-size: 1.1rem; margin-bottom: 0.75rem;">Ready Apps on PC</h3>
-            <div id="appsList" class="apps-list">
-              <div style="color: var(--text-muted); font-size: 0.9rem;">No apps signed yet. Drop an IPA above or request from your phone.</div>
-            </div>
-          </div>
         </div>
-      </section>
 
-      <!-- Right: Downloads & Resources -->
-      <section class="card" id="downloads">
-        <h2><span>📥</span> Downloads</h2>
-        <p class="desc">Download Navuryx iOS Tool for PC and official on-phone companion IPAs.</p>
-
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
-          <div class="app-item">
-            <div class="app-info">
-              <span class="app-title">Navuryx iOS Tool (PC)</span>
-              <span class="app-sub">Windows GUI (.exe) • Native Rust</span>
+        <!-- Sideload & Upload Card -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Upload & Sign Any IPA</h2>
+              <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem;">Drop an IPA to sign with your Apple ID via your PC</p>
             </div>
-            <a href="https://github.com/Navuryx/navuryx-ios-tool/releases" target="_blank" class="btn btn-primary btn-sm">Download</a>
           </div>
 
-          <div class="app-item">
-            <div class="app-info">
-              <span class="app-title">Navuryx Store</span>
-              <span class="app-sub">On-device IPA Store & Installer</span>
-            </div>
-            <a href="https://github.com/Navuryx/navuryx-ios-tool/raw/main/dist/NavuryxStore.ipa" class="btn btn-secondary btn-sm">.IPA</a>
+          <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
+            <input type="file" id="fileInput" accept=".ipa" style="display: none;" onchange="uploadIPA(event)">
+            <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">📦</div>
+            <h4 style="font-size: 1rem; font-weight: 700;">Click or Drop .ipa file here</h4>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.25rem;">Sends to your paired PC for signing & automatic OTA install</p>
           </div>
+          <p id="uploadStatus" style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.8rem; text-align: center;"></p>
 
-          <div class="app-item">
-            <div class="app-info">
-              <span class="app-title">Navuryx Browser</span>
-              <span class="app-sub">Private Tor Browser with .onion tabs</span>
-            </div>
-            <a href="https://github.com/Navuryx/navuryx-ios-tool/raw/main/dist/NavuryxBrowser.ipa" class="btn btn-secondary btn-sm">.IPA</a>
-          </div>
-
-          <div class="app-item">
-            <div class="app-info">
-              <span class="app-title">Navuryx Container</span>
-              <span class="app-sub">Bypass 3-app limit • Unlimited IPAs</span>
-            </div>
-            <a href="https://github.com/Navuryx/navuryx-appstore-apps" target="_blank" class="btn btn-secondary btn-sm">Get IPA</a>
+          <div style="margin-top: 1.5rem; background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 1rem;">
+            <h4 style="font-size: 0.9rem; font-weight: 700; color: #93b4ff; margin-bottom: 0.3rem;">💡 Bypass 3-App Limit with Navuryx Container</h4>
+            <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.4;">Apple only allows 3 sideloaded apps per free Apple ID. Install <strong>Navuryx Live Container</strong> below—it only takes 1 slot while running unlimited guest apps!</p>
           </div>
         </div>
 
-        <div style="margin-top: 1.75rem; padding: 1rem; border-radius: 12px; background: rgba(65, 105, 225, 0.08); border: 1px solid rgba(65, 105, 225, 0.2);">
-          <strong style="color: #7b9bf8; font-size: 0.85rem; display: block; margin-bottom: 0.25rem;">✨ 3-App Limit Bypass:</strong>
-          <span style="font-size: 0.8rem; color: var(--text-muted);">
-            Using <strong>Navuryx Container</strong>, you only use 1 of your 3 free Apple ID slots, and can run unlimited guest apps inside it.
-          </span>
-        </div>
-      </section>
-    </div>
-
-    <!-- Features -->
-    <section class="features-section" id="features">
-      <div class="section-title">Built for Performance & Freedom</div>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">🚀</div>
-          <h3>Native Rust Speed</h3>
-          <p>Engineered entirely in Rust for blazingly fast USB installations, certificate generation, and background daemon refreshes.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">📲</div>
-          <h3>On-Device App Store</h3>
-          <p>Browse, download, and install apps straight from your iPhone. No cables required after pairing once over the secure tunnel.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">🧅</div>
-          <h3>Navuryx Tor Browser</h3>
-          <p>Multi-tab browsing with built-in SOCKS5 Tor routing. Click any .onion link to automatically open a fresh Tor circuit.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">📦</div>
-          <h3>Live Container Runner</h3>
-          <p>Overcome Apple's 3-app personal developer limit by running unlimited guest apps inside a single container slot.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">🔒</div>
-          <h3>Zero Stored Passwords</h3>
-          <p>Your Apple ID password is never stored or transmitted. Auth tokens are kept safely in your Windows Credential Manager.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">🔄</div>
-          <h3>Auto 7-Day Refresh</h3>
-          <p>The Navuryx background daemon automatically re-signs and refreshes apps before the 7-day expiration timer expires.</p>
-        </div>
       </div>
-    </section>
+
+      <!-- App Suite Catalog -->
+      <section id="app-library" style="margin-bottom: 4rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem;">
+          <div>
+            <h2 style="font-size: 1.8rem; font-weight: 800; letter-spacing: -0.02em;">Navuryx App Suite</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Install directly on your iPhone over the air (HTTPS)</p>
+          </div>
+          <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">7 Official Apps</span>
+        </div>
+
+        <div id="appsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem;">
+          <!-- Loaded dynamically from /api/state -->
+        </div>
+      </section>
+
+      <!-- Live Container Guide -->
+      <section id="container-guide" class="card" style="margin-bottom: 3rem;">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem;">How Navuryx Live Container Works</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Run an unlimited library of custom IPAs while staying within Apple's 3-app personal provisioning cap.</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;">
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 12px; padding: 1rem;">
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">1️⃣</div>
+            <h4 style="font-weight: 700; font-size: 0.95rem;">Install Container</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem;">Takes 1 personal Apple ID slot. Signs once and refreshes automatically.</p>
+          </div>
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 12px; padding: 1rem;">
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">2️⃣</div>
+            <h4 style="font-weight: 700; font-size: 0.95rem;">Import Unlimited IPAs</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem;">Import apps from Files or download links. No resigning required.</p>
+          </div>
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 12px; padding: 1rem;">
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">3️⃣</div>
+            <h4 style="font-weight: 700; font-size: 0.95rem;">Isolated Sandboxing</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem;">Each app receives its own separate Documents and Library directory.</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
   </main>
 
-  <footer>
-    <p>Navuryx iOS Tool • Open Source Software by <a href="https://github.com/Navuryx" target="_blank">Navuryx</a></p>
-    <p style="margin-top: 0.5rem; font-size: 0.8rem; opacity: 0.7;">Official Deployment: <a href="https://navuryx-ios-tool.vercel.app">navuryx-ios-tool.vercel.app</a></p>
+  <!-- Realtime Camera QR Scanner Modal -->
+  <div id="scannerModal" class="scanner-modal">
+    <div class="scanner-content">
+      <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">Scan PC Screen QR Code</h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Point your camera at the QR code displayed in Navuryx iOS Tool on your PC.</p>
+      <div id="reader" style="width: 100%; border-radius: 12px; overflow: hidden; background: black;"></div>
+      <button class="btn btn-secondary btn-sm" onclick="stopScanner()" style="margin-top: 1rem; width: 100%;">Close Camera</button>
+    </div>
+  </div>
+
+  <footer style="text-align: center; padding: 2.5rem; border-top: 1px solid var(--card-border); color: var(--text-muted); font-size: 0.85rem;">
+    <p>Navuryx iOS Tool • Built by <a href="https://github.com/Navuryx" target="_blank">Navuryx</a></p>
+    <p style="margin-top: 0.4rem; font-size: 0.78rem; opacity: 0.7;">Official Deployment: <a href="https://navuryx-ios-tool.vercel.app">navuryx-ios-tool.vercel.app</a></p>
   </footer>
 
   <script>
-    // Clear obsolete trycloudflare links from localStorage
+    // Automatically purge old trycloudflare links from localStorage
     const saved = localStorage.getItem('navuryx_pc_link') || '';
     if (saved.includes('trycloudflare.com')) {
       localStorage.removeItem('navuryx_pc_link');
@@ -578,7 +494,9 @@
     let activeLink = paramPair 
       ? `${window.location.origin}/?k=${encodeURIComponent(paramPair)}` 
       : (localStorage.getItem('navuryx_pc_link') || window.location.origin);
+
     let pollInterval = null;
+    let html5QrCode = null;
 
     if (activeLink) {
       document.getElementById('pcUrlInput').value = activeLink;
@@ -594,11 +512,9 @@
           trimmed = u.searchParams.get('url') || trimmed;
         } catch(e){}
       }
-      // If user typed only a hex token (e.g. 16 chars)
       if (/^[a-fA-F0-9]{8,32}$/.test(trimmed)) {
         trimmed = `${window.location.origin}/?k=${trimmed}`;
       }
-      // If user typed local IP without scheme
       if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d+)?/.test(trimmed)) {
         trimmed = `http://${trimmed}`;
       }
@@ -627,11 +543,7 @@
 
       try {
         let u;
-        try {
-          u = new URL(activeLink);
-        } catch (e) {
-          u = new URL(activeLink, window.location.origin);
-        }
+        try { u = new URL(activeLink); } catch (e) { u = new URL(activeLink, window.location.origin); }
         const k = u.searchParams.get('k') || u.searchParams.get('pair') || '';
         const stateUrl = `${u.origin}/api/state?k=${encodeURIComponent(k)}`;
 
@@ -639,33 +551,30 @@
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
 
-        document.getElementById('connectedDetails').classList.remove('hidden');
-
         if (data.connected) {
           statusPill.className = "status-pill connected";
           statusText.textContent = `PC Connected (${data.machine || 'Online'})`;
-          renderApps(data.apps || []);
+          renderAppsGrid(data.apps || []);
         } else {
-          statusPill.className = "status-pill";
-          statusPill.style.background = "rgba(65, 105, 225, 0.2)";
-          statusPill.style.color = "#82aaff";
+          statusPill.className = "status-pill waiting";
           statusText.textContent = "Cloud Relay Ready • Waiting for PC";
-          renderApps(data.availableBuiltins || []);
+          renderAppsGrid(data.availableBuiltins || []);
         }
 
-        // Setup QR code & Deep link
-        const pairUrl = `navuryx://pair?url=${encodeURIComponent(activeLink)}`;
-        document.getElementById('deepLinkBtn').href = pairUrl;
+        // Render QR Code
+        const pairUrl = `${window.location.origin}/?pair=${encodeURIComponent(k || 'demo')}`;
+        const deepLink = `navuryx://pair?url=${encodeURIComponent(activeLink)}`;
+        document.getElementById('deepLinkBtn').href = deepLink;
         QRCode.toCanvas(document.getElementById('qrCanvas'), pairUrl, { width: 140, margin: 1 });
 
-        // Start polling
         if (!pollInterval) {
           pollInterval = setInterval(refreshState, 3500);
         }
       } catch (err) {
-        statusPill.className = "status-pill error";
+        statusPill.className = "status-pill";
+        statusPill.style.background = "rgba(255, 75, 75, 0.15)";
+        statusPill.style.color = "#ff6b6b";
         statusText.textContent = "Offline / Connection Failed";
-        console.error(err);
       }
     }
 
@@ -684,34 +593,52 @@
             const statusText = document.getElementById('connStatusText');
             statusPill.className = "status-pill connected";
             statusText.textContent = `PC Connected (${data.machine || 'Online'})`;
-            renderApps(data.apps || []);
+            renderAppsGrid(data.apps || []);
           }
         }
       } catch (e) {}
     }
 
-    function renderApps(apps) {
-      const container = document.getElementById('appsList');
+    function renderAppsGrid(apps) {
+      const grid = document.getElementById('appsGrid');
       if (!apps || apps.length === 0) {
-        container.innerHTML = '<div style="color: var(--text-muted); font-size: 0.9rem;">No apps available yet. Drop an IPA above or request from your phone.</div>';
+        grid.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">No apps available yet.</p>';
         return;
       }
-      container.innerHTML = apps.map((app, idx) => {
+      grid.innerHTML = apps.map((app, idx) => {
         let u;
         try { u = new URL(activeLink); } catch (e) { u = new URL(activeLink, window.location.origin); }
         const k = u.searchParams.get('k') || '';
         const manifestUrl = `${window.location.origin}/manifest/${idx}.plist?k=${encodeURIComponent(k)}`;
         const itmsUrl = `itms-services://?action=download-manifest&url=${encodeURIComponent(manifestUrl)}`;
-        const title = app.name || app.title || app.source || 'App';
+        const title = app.name || app.title || 'App';
         const bundle = app.id || app.bundle_id || 'com.navuryx.app';
         const version = app.version || '1.0';
+        const desc = app.description || 'Navuryx application';
+        const category = app.category || 'Utilities';
+
+        const iconHtml = app.icon 
+          ? `<img src="${app.icon}" alt="${title}" onerror="this.onerror=null; this.parentElement.innerText='${title.charAt(0)}';">`
+          : title.charAt(0);
+
         return `
-          <div class="app-item">
-            <div class="app-info">
-              <span class="app-title">${title}</span>
-              <span class="app-sub">${bundle} • v${version}</span>
+          <div class="app-card">
+            <div>
+              <div class="app-top">
+                <div class="app-icon">${iconHtml}</div>
+                <div class="app-meta">
+                  <h4>${title}</h4>
+                  <div style="display: flex; gap: 0.4rem; align-items: center; margin-top: 0.2rem;">
+                    <span class="app-badge">v${version}</span>
+                    <span class="app-badge">${category}</span>
+                  </div>
+                </div>
+              </div>
+              <p class="app-desc">${desc}</p>
             </div>
-            <a href="${itmsUrl}" class="btn btn-primary btn-sm">Install on Phone</a>
+            <div>
+              <a href="${itmsUrl}" class="btn btn-primary" style="width: 100%;">Install on iPhone (OTA)</a>
+            </div>
           </div>
         `;
       }).join('');
@@ -730,12 +657,9 @@
         const k = u.searchParams.get('k') || '';
         const uploadUrl = `${u.origin}/api/upload?k=${encodeURIComponent(k)}&name=${encodeURIComponent(file.name)}`;
 
-        const res = await fetch(uploadUrl, {
-          method: 'POST',
-          body: file
-        });
+        const res = await fetch(uploadUrl, { method: 'POST', body: file });
         const msg = await res.text();
-        statusEl.textContent = msg === "Received" ? "Uploaded! Signing on your PC now..." : msg;
+        statusEl.textContent = msg === "Received" ? "✓ Uploaded! Signing on your PC now..." : msg;
       } catch (err) {
         statusEl.textContent = "Upload failed: " + err.message;
       }
@@ -743,10 +667,38 @@
 
     function copyPairLink() {
       if (!activeLink) return;
-      const pairUrl = `navuryx://pair?url=${encodeURIComponent(activeLink)}`;
-      navigator.clipboard.writeText(pairUrl).then(() => {
-        alert("Pair link copied! Paste it in Navuryx Store on your phone.");
+      navigator.clipboard.writeText(activeLink).then(() => {
+        alert("PC Connect Link copied! Paste it into Navuryx Store or bookmark in Safari.");
       });
+    }
+
+    // Camera QR Code Scanner
+    function startScanner() {
+      const modal = document.getElementById('scannerModal');
+      modal.style.display = 'grid';
+
+      html5QrCode = new Html5Qrcode("reader");
+      const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+      html5QrCode.start({ facingMode: "environment" }, config, (decodedText) => {
+        stopScanner();
+        document.getElementById('pcUrlInput').value = decodedText;
+        connectPCLink();
+      }).catch(err => {
+        alert("Camera permission denied or camera not available: " + err);
+        stopScanner();
+      });
+    }
+
+    function stopScanner() {
+      const modal = document.getElementById('scannerModal');
+      modal.style.display = 'none';
+      if (html5QrCode) {
+        html5QrCode.stop().then(() => {
+          html5QrCode.clear();
+          html5QrCode = null;
+        }).catch(() => {});
+      }
     }
   </script>
 </body>
