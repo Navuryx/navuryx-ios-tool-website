@@ -452,5 +452,18 @@
     <p style="margin-top: 0.4rem; font-size: 0.78rem; opacity: 0.7;">Official Deployment: <a href="https://navuryx-ios-tool.vercel.app">navuryx-ios-tool.vercel.app</a></p>
   </footer>
 
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const pairToken = params.get('k') || params.get('pair');
+    if (pairToken) {
+      const banner = document.createElement('div');
+      banner.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#4169E1,#8A4FFF);color:white;padding:14px 24px;border-radius:999px;box-shadow:0 10px 30px rgba(65,105,225,0.5);display:flex;align-items:center;gap:12px;z-index:9999;font-weight:700;font-size:14px;';
+      const currentUrl = window.location.href;
+      const deepLink = 'navuryx://pair?url=' + encodeURIComponent(currentUrl);
+      banner.innerHTML = '<span>⚡ Paired with PC</span><a href="' + deepLink + '" style="background:white;color:#4169E1;padding:6px 14px;border-radius:999px;text-decoration:none;font-weight:800;font-size:13px;">Open in Store App</a>';
+      document.body.appendChild(banner);
+    }
+  </script>
 </body>
 </html>
