@@ -115,8 +115,8 @@ app.post(['/api/session/register', '/api/pc/sync'], (req, res) => {
   const updatedSession = {
     token,
     lanIp: lanIp || req.ip,
-    storePort: storePort || 8080,
-    apps: Array.isArray(apps) ? apps : [],
+    storePort: storePort || 8787,
+    apps: Array.isArray(apps) ? apps : (existing.apps || []),
     machine: machine || 'Windows PC',
     pendingRequests: existing.pendingRequests,
     lastSeen: Date.now()
@@ -133,55 +133,79 @@ app.post(['/api/session/register', '/api/pc/sync'], (req, res) => {
 
 // Phone queries PC session state
 app.get(['/api/state', '/state'], (req, res) => {
-  const token = req.query.k || req.query.pair || req.query.token;
-  if (!token) {
-    return res.json({
-      connected: false,
-      message: 'No PC paired yet. Enter your PC pair code or scan the QR code in Navuryx iOS Tool.',
-      availableBuiltins: BUILTIN_APPS,
-      apps: []
-    });
+  const token = req.query.k || req.query.pair || req.query.token || "";
+  const host = req.headers.host || 'navuryx-ios-tool.vercel.app';
+  const proto = req.headers['x-forwarded-proto'] || 'https';
+  const base = `${proto}://${host}`;
+
+  let session = token ? sessions.get(token) : null;
+  if (token && !session) {
+    session = {
+      token,
+      lanIp: req.ip,
+      storePort: 8787,
+      apps: [],
+      pendingRequests: [],
+      machine: 'Windows PC',
+      lastSeen: Date.now()
+    };
+    sessions.set(token, session);
   }
 
-  const session = sessions.get(token);
-  if (!session) {
-    return res.json({
-      connected: false,
-      token,
-      message: 'PC session expired or offline. Start the Phone Store in Navuryx iOS Tool to reconnect.',
-      availableBuiltins: BUILTIN_APPS,
-      apps: []
-    });
-  }
+  const rawApps = (session && session.apps.length > 0) ? session.apps : BUILTIN_APPS;
+  const mappedApps = rawApps.map((app, idx) => ({
+    source: app.source || app.id?.split('.').pop() || `app${idx}`,
+    name: app.name || app.title || `App ${idx}`,
+    bundleIdentifier: app.id || app.bundle_id || `com.navuryx.app.${idx}`,
+    version: app.version || "1.0",
+    manifestURL: `${base}/manifest/${idx}.plist?k=${token}`,
+    downloadURL: app.downloadUrl || `${base}/ipa/${idx}.ipa?k=${token}`,
+    iconURL: app.icon || "",
+    description: app.description || ""
+  }));
 
   res.json({
     connected: true,
     token,
-    lanIp: session.lanIp,
-    machine: session.machine,
-    lastSeen: session.lastSeen,
-    apps: session.apps.length > 0 ? session.apps : BUILTIN_APPS,
+    lanIp: session ? session.lanIp : "127.0.0.1",
+    machine: session ? session.machine : "Windows PC",
+    lastSeen: session ? session.lastSeen : Date.now(),
+    apps: mappedApps,
     availableBuiltins: BUILTIN_APPS,
-    pending: session.pendingRequests.map(p => p.app)
+    pending: session ? session.pendingRequests.map(p => p.app) : [],
+    error: ""
   });
 });
 
 // Phone requests an app to be signed by PC
 app.all(['/api/request', '/request'], (req, res) => {
-  const token = req.query.k || req.query.pair || req.body.token || req.body.k;
-  const appName = req.query.app || req.body.app;
+  const token = req.query.k || req.query.pair || req.body.token || req.body.k || "";
+  const appName = req.query.app || req.body.app || "";
 
   if (!appName) {
     return res.status(400).send('Missing app name');
   }
 
-  const session = token ? sessions.get(token) : null;
-  if (session) {
-    session.pendingRequests.push({ app: appName, timestamp: Date.now() });
-    return res.send(`App ${appName} queued for signing on your PC.`);
+  let session = token ? sessions.get(token) : null;
+  if (token && !session) {
+    session = {
+      token,
+      lanIp: req.ip,
+      storePort: 8787,
+      apps: [],
+      pendingRequests: [],
+      machine: 'Windows PC',
+      lastSeen: Date.now()
+    };
+    sessions.set(token, session);
   }
 
-  res.send(`Queued ${appName}. Start Navuryx iOS Tool on PC to sign.`);
+  if (session) {
+    session.pendingRequests.push({ app: appName, timestamp: Date.now() });
+  }
+
+  res.setHeader('Content-Type', 'text/plain');
+  res.send('Requested');
 });
 
 // PC pulls pending requests
