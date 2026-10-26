@@ -420,11 +420,11 @@
         <div class="form-group">
           <label>Your PC Store Link or Key</label>
           <div style="display: flex; gap: 0.5rem;">
-            <input type="text" id="pcUrlInput" class="input-field" placeholder="https://xxxx.trycloudflare.com/?k=your-key">
-            <button id="connectBtn" class="btn btn-primary" onclick="connectPCLink()">Connect</button>
+            <input type="text" id="pcUrlInput" class="input-field" placeholder="Enter Pair Code or Link (e.g. a8b4c2...)">
+            <button id="connectBtn" class="btn btn-primary" onclick="connectPCLink()">Connect</button><button class="btn btn-secondary" onclick="resetPCLink()" style="background: rgba(255,255,255,0.08); color: var(--text);">Clear</button>
           </div>
           <small style="color: var(--text-muted); display: block; margin-top: 0.5rem; font-size: 0.8rem;">
-            Find this in <strong>Navuryx iOS Tool &gt; Phone store &gt; Copy link</strong> on your PC.
+            Enter the Pair Code shown in <strong>Navuryx iOS Tool &gt; Phone store</strong> on your PC, or open the link directly.
           </small>
         </div>
 
@@ -567,7 +567,17 @@
   </footer>
 
   <script>
-    const urlParams = new URLSearchParams(window.location.search); const paramPair = urlParams.get('pair') || urlParams.get('k') || urlParams.get('token'); let activeLink = paramPair ? (window.location.origin + '/?k=' + paramPair) : (localStorage.getItem('navuryx_pc_link') || window.location.origin);
+    // Clear obsolete trycloudflare links from localStorage
+    const saved = localStorage.getItem('navuryx_pc_link') || '';
+    if (saved.includes('trycloudflare.com')) {
+      localStorage.removeItem('navuryx_pc_link');
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramPair = urlParams.get('pair') || urlParams.get('k') || urlParams.get('token');
+    let activeLink = paramPair 
+      ? `${window.location.origin}/?k=${encodeURIComponent(paramPair)}` 
+      : (localStorage.getItem('navuryx_pc_link') || window.location.origin);
     let pollInterval = null;
 
     if (activeLink) {
@@ -577,13 +587,29 @@
 
     function parseLink(raw) {
       let trimmed = raw.trim();
+      if (!trimmed) return window.location.origin;
       if (trimmed.startsWith('navuryx://')) {
         try {
           const u = new URL(trimmed);
           trimmed = u.searchParams.get('url') || trimmed;
         } catch(e){}
       }
+      // If user typed only a hex token (e.g. 16 chars)
+      if (/^[a-fA-F0-9]{8,32}$/.test(trimmed)) {
+        trimmed = `${window.location.origin}/?k=${trimmed}`;
+      }
+      // If user typed local IP without scheme
+      if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d+)?/.test(trimmed)) {
+        trimmed = `http://${trimmed}`;
+      }
       return trimmed;
+    }
+
+    function resetPCLink() {
+      localStorage.removeItem('navuryx_pc_link');
+      document.getElementById('pcUrlInput').value = '';
+      activeLink = window.location.origin;
+      connectPCLink();
     }
 
     async function connectPCLink() {
@@ -600,33 +626,45 @@
       statusPill.className = "status-pill";
 
       try {
-        const u = new URL(activeLink);
-        const k = u.searchParams.get('k') || '';
-        const stateUrl = `${u.origin}/state?k=${encodeURIComponent(k)}`;
+        let u;
+        try {
+          u = new URL(activeLink);
+        } catch (e) {
+          u = new URL(activeLink, window.location.origin);
+        }
+        const k = u.searchParams.get('k') || u.searchParams.get('pair') || '';
+        const stateUrl = `${u.origin}/api/state?k=${encodeURIComponent(k)}`;
 
         const res = await fetch(stateUrl, { cache: 'no-store' });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
 
-        statusPill.className = "status-pill connected";
-        statusText.textContent = "Connected";
-
         document.getElementById('connectedDetails').classList.remove('hidden');
+
+        if (data.connected) {
+          statusPill.className = "status-pill connected";
+          statusText.textContent = `PC Connected (${data.machine || 'Online'})`;
+          renderApps(data.apps || []);
+        } else {
+          statusPill.className = "status-pill";
+          statusPill.style.background = "rgba(65, 105, 225, 0.2)";
+          statusPill.style.color = "#82aaff";
+          statusText.textContent = "Cloud Relay Ready • Waiting for PC";
+          renderApps(data.availableBuiltins || []);
+        }
 
         // Setup QR code & Deep link
         const pairUrl = `navuryx://pair?url=${encodeURIComponent(activeLink)}`;
         document.getElementById('deepLinkBtn').href = pairUrl;
         QRCode.toCanvas(document.getElementById('qrCanvas'), pairUrl, { width: 140, margin: 1 });
 
-        renderApps(data.apps || []);
-
         // Start polling
         if (!pollInterval) {
-          pollInterval = setInterval(refreshState, 3000);
+          pollInterval = setInterval(refreshState, 3500);
         }
       } catch (err) {
         statusPill.className = "status-pill error";
-        statusText.textContent = "Could not reach PC";
+        statusText.textContent = "Offline / Connection Failed";
         console.error(err);
       }
     }
@@ -634,13 +672,20 @@
     async function refreshState() {
       if (!activeLink) return;
       try {
-        const u = new URL(activeLink);
-        const k = u.searchParams.get('k') || '';
-        const stateUrl = `${u.origin}/state?k=${encodeURIComponent(k)}`;
+        let u;
+        try { u = new URL(activeLink); } catch (e) { u = new URL(activeLink, window.location.origin); }
+        const k = u.searchParams.get('k') || u.searchParams.get('pair') || '';
+        const stateUrl = `${u.origin}/api/state?k=${encodeURIComponent(k)}`;
         const res = await fetch(stateUrl, { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
-          renderApps(data.apps || []);
+          if (data.connected) {
+            const statusPill = document.getElementById('connStatus');
+            const statusText = document.getElementById('connStatusText');
+            statusPill.className = "status-pill connected";
+            statusText.textContent = `PC Connected (${data.machine || 'Online'})`;
+            renderApps(data.apps || []);
+          }
         }
       } catch (e) {}
     }
@@ -648,16 +693,23 @@
     function renderApps(apps) {
       const container = document.getElementById('appsList');
       if (!apps || apps.length === 0) {
-        container.innerHTML = '<div style="color: var(--text-muted); font-size: 0.9rem;">No apps signed yet. Drop an IPA above or request from your phone.</div>';
+        container.innerHTML = '<div style="color: var(--text-muted); font-size: 0.9rem;">No apps available yet. Drop an IPA above or request from your phone.</div>';
         return;
       }
-      container.innerHTML = apps.map(app => {
-        const itmsUrl = `itms-services://?action=download-manifest&url=${encodeURIComponent(app.manifestURL || '')}`;
+      container.innerHTML = apps.map((app, idx) => {
+        let u;
+        try { u = new URL(activeLink); } catch (e) { u = new URL(activeLink, window.location.origin); }
+        const k = u.searchParams.get('k') || '';
+        const manifestUrl = `${window.location.origin}/manifest/${idx}.plist?k=${encodeURIComponent(k)}`;
+        const itmsUrl = `itms-services://?action=download-manifest&url=${encodeURIComponent(manifestUrl)}`;
+        const title = app.name || app.title || app.source || 'App';
+        const bundle = app.id || app.bundle_id || 'com.navuryx.app';
+        const version = app.version || '1.0';
         return `
           <div class="app-item">
             <div class="app-info">
-              <span class="app-title">${app.title || app.source || 'App'}</span>
-              <span class="app-sub">${app.bundle_id || ''} • v${app.version || '1.0'}</span>
+              <span class="app-title">${title}</span>
+              <span class="app-sub">${bundle} • v${version}</span>
             </div>
             <a href="${itmsUrl}" class="btn btn-primary btn-sm">Install on Phone</a>
           </div>
@@ -673,9 +725,10 @@
       statusEl.textContent = `Uploading ${file.name} to PC...`;
 
       try {
-        const u = new URL(activeLink);
+        let u;
+        try { u = new URL(activeLink); } catch (e) { u = new URL(activeLink, window.location.origin); }
         const k = u.searchParams.get('k') || '';
-        const uploadUrl = `${u.origin}/upload?k=${encodeURIComponent(k)}&name=${encodeURIComponent(file.name)}`;
+        const uploadUrl = `${u.origin}/api/upload?k=${encodeURIComponent(k)}&name=${encodeURIComponent(file.name)}`;
 
         const res = await fetch(uploadUrl, {
           method: 'POST',
