@@ -21,19 +21,19 @@ const BUILTIN_APPS = [
     description: "Bypass Apple's 3-app personal provisioning limit. 1 slot hosts unlimited guest apps in isolated sandboxes.",
     category: "System Utility",
     icon: "https://raw.githubusercontent.com/Navuryx/navuryx-appstore-apps/main/ios-container/Assets/AppIcon.png",
-    downloadUrl: "https://github.com/Navuryx/navuryx-appstore-apps/releases/latest/download/NavuryxContainer.ipa",
+    downloadUrl: "https://github.com/Navuryx/navuryx-ios-tool-website/releases/download/v1.0.0/NavuryxContainer.ipa",
     size: 130730,
     source: "container"
   },
   {
     id: "com.navuryx.browser",
-    name: "Navuryx Tor Browser",
+    name: "Navuryx Browser",
     version: "1.2.0",
     developer: "Navuryx Team",
     description: "Privacy-first web browser with native Tor onion routing, multi-tab support, and isolated browsing.",
     category: "Browsers",
     icon: "https://raw.githubusercontent.com/Navuryx/navuryx-appstore-apps/main/ios-browser/Assets/AppIcon.png",
-    downloadUrl: "https://github.com/Navuryx/navuryx-appstore-apps/releases/latest/download/NavuryxBrowser.ipa",
+    downloadUrl: "https://github.com/Navuryx/navuryx-ios-tool-website/releases/download/v1.0.0/NavuryxBrowser.ipa",
     size: 2981833,
     source: "browser"
   },
@@ -45,7 +45,7 @@ const BUILTIN_APPS = [
     description: "Decentralized peer-to-peer encrypted messaging with nearby discovery and offline assistant.",
     category: "Communication",
     icon: "https://raw.githubusercontent.com/Navuryx/navuryx-appstore-apps/main/ios-chat/Sources/Assets.xcassets/AppIcon.appiconset/icon.png",
-    downloadUrl: "https://github.com/Navuryx/navuryx-appstore-apps/releases/latest/download/NavuryxChat.ipa",
+    downloadUrl: "https://github.com/Navuryx/navuryx-ios-tool-website/releases/download/v1.0.0/NavuryxChat.ipa",
     size: 97852,
     source: "chat"
   },
@@ -57,7 +57,7 @@ const BUILTIN_APPS = [
     description: "Private photo sharing and social feed with zero tracking, local photo storage, and instant posts.",
     category: "Social",
     icon: "https://raw.githubusercontent.com/Navuryx/navuryx-appstore-apps/main/ios-gram/Sources/Assets.xcassets/AppIcon.appiconset/icon.png",
-    downloadUrl: "https://github.com/Navuryx/navuryx-appstore-apps/releases/latest/download/NavuryxGram.ipa",
+    downloadUrl: "https://github.com/Navuryx/navuryx-ios-tool-website/releases/download/v1.0.0/NavuryxGram.ipa",
     size: 98660,
     source: "gram"
   },
@@ -69,7 +69,7 @@ const BUILTIN_APPS = [
     description: "Retro arcade snake with classic grid physics.",
     category: "Games",
     icon: "",
-    downloadUrl: "https://github.com/Navuryx/navuryx-appstore-apps/releases/latest/download/NavuryxSnake.ipa",
+    downloadUrl: "https://github.com/Navuryx/navuryx-ios-tool-website/releases/download/v1.0.0/NavuryxSnake.ipa",
     size: 62678,
     source: "snake"
   },
@@ -81,7 +81,7 @@ const BUILTIN_APPS = [
     description: "Minimalist sliding tile puzzle game with zero ads.",
     category: "Games",
     icon: "",
-    downloadUrl: "https://github.com/Navuryx/navuryx-appstore-apps/releases/latest/download/Navuryx2048.ipa",
+    downloadUrl: "https://github.com/Navuryx/navuryx-ios-tool-website/releases/download/v1.0.0/Navuryx2048.ipa",
     size: 62603,
     source: "g2048"
   },
@@ -93,7 +93,7 @@ const BUILTIN_APPS = [
     description: "High frame-rate responsive retro table tennis game.",
     category: "Games",
     icon: "",
-    downloadUrl: "https://github.com/Navuryx/navuryx-appstore-apps/releases/latest/download/NavuryxPong.ipa",
+    downloadUrl: "https://github.com/Navuryx/navuryx-ios-tool-website/releases/download/v1.0.0/NavuryxPong.ipa",
     size: 54719,
     source: "pong"
   }
