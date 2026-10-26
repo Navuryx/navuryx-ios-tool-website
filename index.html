@@ -567,7 +567,7 @@
   </footer>
 
   <script>
-    let activeLink = localStorage.getItem('navuryx_pc_link') || '';
+    const urlParams = new URLSearchParams(window.location.search); const paramPair = urlParams.get('pair') || urlParams.get('k') || urlParams.get('token'); let activeLink = paramPair ? (window.location.origin + '/?k=' + paramPair) : (localStorage.getItem('navuryx_pc_link') || window.location.origin);
     let pollInterval = null;
 
     if (activeLink) {

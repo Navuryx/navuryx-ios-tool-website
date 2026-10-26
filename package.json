@@ -1,0 +1,17 @@
+{
+  "name": "navuryx-ios-tool-website",
+  "version": "1.0.0",
+  "description": "Navuryx iOS Tool & PC Connect Cloud Relay Server",
+  "main": "api/index.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.1"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}
