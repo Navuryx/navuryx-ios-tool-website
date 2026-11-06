@@ -160,7 +160,8 @@ app.get(['/api/state', '/state'], (req, res) => {
     name: app.name || app.title || `App ${idx}`,
     bundleIdentifier: app.id || app.bundle_id || `com.navuryx.app.${idx}`,
     version: app.version || "1.0",
-    manifestURL: `${base}/manifest/${idx}.plist?k=${token}`,
+    // Signed apps carry a manifest hosted on GitHub (iOS can't pass Vercel's bot challenge).
+    manifestURL: app.manifestUrl || `${base}/manifest/${idx}.plist?k=${token}`,
     downloadURL: app.downloadUrl || `${base}/ipa/${idx}.ipa?k=${token}`,
     iconURL: app.icon || "",
     description: app.description || ""
