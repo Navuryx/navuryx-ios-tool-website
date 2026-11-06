@@ -152,7 +152,9 @@ app.get(['/api/state', '/state'], (req, res) => {
     sessions.set(token, session);
   }
 
-  const rawApps = (session && session.apps.length > 0) ? session.apps : BUILTIN_APPS;
+  // A paired phone (token present) must only see apps its PC has signed: the built-in catalog
+  // entries point at UNSIGNED ipas, which iOS refuses to install.
+  const rawApps = token ? (session ? session.apps : []) : BUILTIN_APPS;
   const mappedApps = rawApps.map((app, idx) => ({
     source: app.source || app.id?.split('.').pop() || `app${idx}`,
     name: app.name || app.title || `App ${idx}`,
