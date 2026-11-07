@@ -106,7 +106,7 @@ app.get('/api/health', (req, res) => {
 
 // PC Registration & Heartbeat
 app.post(['/api/session/register', '/api/pc/sync'], (req, res) => {
-  const { token, lanIp, storePort, apps, machine } = req.body;
+  const { token, lanIp, storePort, apps, machine, error } = req.body;
   if (!token) {
     return res.status(400).json({ error: 'Missing session token' });
   }
@@ -118,6 +118,7 @@ app.post(['/api/session/register', '/api/pc/sync'], (req, res) => {
     storePort: storePort || 8787,
     apps: Array.isArray(apps) ? apps : (existing.apps || []),
     machine: machine || 'Windows PC',
+    error: typeof error === 'string' ? error : '',
     pendingRequests: existing.pendingRequests,
     lastSeen: Date.now()
   };
@@ -176,7 +177,7 @@ app.get(['/api/state', '/state'], (req, res) => {
     apps: mappedApps,
     availableBuiltins: BUILTIN_APPS,
     pending: session ? session.pendingRequests.map(p => p.app) : [],
-    error: ""
+    error: session && session.error ? session.error : ""
   });
 });
 
